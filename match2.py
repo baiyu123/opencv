@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 import scipy as sp
 from matplotlib import pyplot as plt
-original = cv2.imread('keyboard.jpg')
-match = cv2.imread('table.jpg')
+original = cv2.imread('original.jpg')
+match = cv2.imread('side.jpg')
 sift = cv2.SIFT()
 kp1, des1 = sift.detectAndCompute(original,None)
 kp2, des2 = sift.detectAndCompute(match,None)
@@ -21,12 +21,18 @@ search_params = dict(checks=50)   # or pass empty dictionary
 flann = cv2.FlannBasedMatcher(index_params,search_params)
 
 matches = flann.knnMatch(des1,des2,k=2)
+temp = []
 good = []
-
-
+min = 99999999
 for m,n in matches:
   if m.distance < 0.7*n.distance:
-    good.append(m)
+    temp.append(m)
+  if m.distance < min:
+    min = m.distance
+
+for m in temp:
+  if m.distance < min*2.5:
+      good.append(m)
 
 h1, w1 = original.shape[:2]
 h2, w2 = match.shape[:2]
