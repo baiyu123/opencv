@@ -2,8 +2,9 @@ import cv2
 import numpy as np
 from operator import itemgetter, attrgetter, methodcaller
 from numpy.linalg import inv
+import math
 
-img = cv2.imread('updown.jpg')
+img = cv2.imread('grid2.jpg')
 #img = cv2.resize(img,(1800,900))
 img = cv2.medianBlur(img,5)
 gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -16,13 +17,11 @@ arr2 = []
 hight, width, channel = img.shape
 for m,n in lines[0]:
     temp.append((m,n))
-
+# sort with distance
 temp.sort(key=lambda elem: elem[0])
 len = len(temp)
-print temp
+# delete multiple overlapping lines
 for x in range(0,len):
-  print str("x= ")+ str(x)
-  print str("len-1=")+str(len-1)
   if x != len-1:
     if abs(temp[x+1][0]-temp[x][0]) > 0.05*width:
           good.append([temp[x][0],temp[x][1]])
@@ -30,8 +29,18 @@ for x in range(0,len):
           good.append([temp[x][0],temp[x][1]])
   elif abs(temp[x-1][0]-temp[x][0]) < 0.05*width:
         good.append([temp[x][0],temp[x][1]])
-
-print good
+A = good[0]
+B = good[1]
+def intersect(p1,p2):
+      mat = np.matrix(((math.cos(p1[1]),-math.sin(p1[1])),(math.cos(p2[1]),-math.sin(p2[1]))))
+      mat = inv(mat)
+      dis = np.matrix((p1[0],p2[0]))
+      dis = dis.transpose()
+      result = np.dot(mat,dis)
+      return result
+intesec = intersect(A,B)
+print intesec[0,0]
+cv2.circle(img,(int(intesec[0,0]),-int(intesec[1,0])),10,255,-1)
 for rho,theta in good:
     a = np.cos(theta)
     b = np.sin(theta)
