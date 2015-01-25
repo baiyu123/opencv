@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 cap = cv2.VideoCapture(0)
 template = cv2.imread('original.jpg',0)
 
-while(1)
+while(1):
     ret, img_rgb = cp.read()
     img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
     w, h = template.shape[::-1]
