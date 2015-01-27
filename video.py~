@@ -18,8 +18,8 @@ upper_green = (65,255,255)
 flann = cv2.FlannBasedMatcher(index_params,search_params)
 while(True):
     # Capture frame-by-frame
-      ret, frame = cap.read()
-    
+    ret, frame = cap.read()
+    if ret == True:
 #      frame = cv2.resize(frame,(800,600))
       #masking
       gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
@@ -74,7 +74,7 @@ while(True):
                 cv2.circle(view,(int(kp1[m.queryIdx].pt[0]),int(kp1[m.queryIdx].pt[1])),10,255,-1)
                 cv2.circle(view,(int(kp2[m.trainIdx].pt[0]+w1), int(kp2[m.trainIdx].pt[1])),10,255,-1)
       cv2.imshow('test',view)
-      if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) & 0xFF == ord('q'):
           break
 # When everything done, release the capture
 cap.release()

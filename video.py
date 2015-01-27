@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 import time
 
 cap = cv2.VideoCapture(0)
-original = cv2.imread('croproomba.jpg')
+original = cv2.imread('roomba.jpg')
 #original = cv2.resize(original,(600,600))
 surf = cv2.SURF(400)
 kp1, des1 = surf.detectAndCompute(original,None)
@@ -19,7 +19,7 @@ flann = cv2.FlannBasedMatcher(index_params,search_params)
 while(True):
     # Capture frame-by-frame
     ret, frame = cap.read()
-    if frame != None:
+    if ret == True:
 #      frame = cv2.resize(frame,(800,600))
       #masking
       gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
