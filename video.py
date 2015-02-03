@@ -7,7 +7,7 @@ import time
 
 cap = cv2.VideoCapture(0)
 original = cv2.imread('roomba.jpg')
-#original = cv2.resize(original,(600,600))
+original = cv2.resize(original,(600,600))
 surf = cv2.SURF(400)
 kp1, des1 = surf.detectAndCompute(original,None)
 FLANN_INDEX_KDTREE = 0
@@ -51,7 +51,7 @@ while(True):
             try:
                 matches = flann.knnMatch(des1,des2,k=2)
             except:
-                print matches
+                print des2
             good = np.array([])
             veryGood = np.array([])
             for m,n in matches:
