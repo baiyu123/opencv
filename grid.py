@@ -4,7 +4,7 @@ from operator import itemgetter, attrgetter, methodcaller
 from numpy.linalg import inv
 import math
 
-img = cv2.imread('side.jpg')
+img = cv2.imread('grid2.jpg')
 img = cv2.resize(img,(800,800))
 img = cv2.medianBlur(img,5)
 gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)

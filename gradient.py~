@@ -1,0 +1,14 @@
+import cv2
+import numpy as np
+
+img = cv2.imread('roomba.jpg')
+gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+sobelx = cv2.Sobel(img,cv2.CV_64F,1,1,ksize=5)
+print sobelx[:,:,0]
+cv2.imshow('view0',sobelx[124:200,50:150,0])
+cv2.imshow('view1',sobelx[:,:,1])
+cv2.imshow('view2',sobelx[:,:,2])
+cv2.imshow('view',sobelx)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()

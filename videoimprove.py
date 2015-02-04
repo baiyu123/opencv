@@ -54,10 +54,14 @@ while(True):
           circles2 = cv2.HoughCircles(bimaskblur,cv.CV_HOUGH_GRADIENT,1,20,
                              param1=120,param2=50,minRadius=20,maxRadius=0)
           if circles2 != None:
+             count = 0
              for i in circles[0,:]:
                 # draw the outer circle
                 #cv2.circle(temp,(i[0],i[1]),i[2],(0,255,0),-1)
                 cv2.circle(view,(i[0],i[1]),i[2],(0,255,0),3)
+                count = count +1
+                if count == 10:
+                    break
                   
 
 
