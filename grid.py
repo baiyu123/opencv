@@ -4,17 +4,18 @@ from operator import itemgetter, attrgetter, methodcaller
 from numpy.linalg import inv
 import math
 
-img = cv2.imread('grid2.jpg')
-img = cv2.resize(img,(800,800))
+img = cv2.imread('roombatest.jpg')
+#img = cv2.resize(img,(800,800))
 img = cv2.medianBlur(img,5)
 gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 edges = cv2.Canny(gray,50,150,apertureSize = 3)
-lines = cv2.HoughLines(edges,1,np.pi/180,200)
+lines = cv2.HoughLines(edges,1,np.pi/180,80)
 good = []
 temp = []
 arr1 = []
 arr2 = []
 hight, width, channel = img.shape
+print lines == None
 for m,n in lines[0]:
     temp.append((m,n))
 # sort with distance
