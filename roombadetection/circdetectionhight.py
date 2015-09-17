@@ -22,6 +22,19 @@ cap = cv2.VideoCapture(0)
 lower_green = (55,245,245)
 upper_green = (65,255,255)
 
+#intersection function
+def intersect(p1,p2):
+  mat = np.matrix(((math.cos(p1[1]),-math.sin(p1[1])),(math.cos(p2[1]),-math.sin(p2[1]))))
+  mat = inv(mat)
+  dis = np.matrix((p1[0],p2[0]))
+  dis = dis.transpose()
+  result = np.dot(mat,dis)
+  return result
+
+#distance between p1 and p2, p2[1] is a negative number
+def distance(p1,p2):
+  dist = math.sqrt(pow((p1[0]-p2[0]),2)+pow(p1[1]+p2[1],2))
+  return dist
 
 while(True):
     #calculate range of circle
@@ -48,8 +61,13 @@ while(True):
           for i in circles[0,:]:
              # draw the outer circle
              #cv2.circle(temp,(i[0],i[1]),i[2],(0,255,0),-1)
+              up = i[1]-i[2]
+              if up > 10000:
+                up = 0;
+
               cv2.circle(view,(i[0],i[1]),i[2],(0,255,0),3)
-              cv2.rectangle(temp,(i[0]-i[2],i[1]-i[2]),(i[0]+i[2],i[1]+i[2]),(0,255,0),-1)
+              cv2.rectangle(temp,(i[0]-i[2],up),(i[0]+i[2],i[1]+i[2]),(0,255,0),-1)
+              cv2.imshow('rect',temp)
               count = count + 1
               if count == 10:
                  break
@@ -98,6 +116,7 @@ while(True):
             #print goodlen
             Count = 0;
             Count = 0;
+            #filter lines with certain angle
             for x in range(0,goodlen):
               for y in range(x,goodlen):
                   if abs(good[x][1]-good[y][1])>0.7 and abs(good[x][1]-good[y][1])<0.9:
@@ -105,20 +124,40 @@ while(True):
                         A.append(good[x])
                         B.append(good[y])
                         break
-            def intersect(p1,p2):
-                  mat = np.matrix(((math.cos(p1[1]),-math.sin(p1[1])),(math.cos(p2[1]),-math.sin(p2[1]))))
-                  mat = inv(mat)
-                  dis = np.matrix((p1[0],p2[0]))
-                  dis = dis.transpose()
-                  result = np.dot(mat,dis)
-                  return result
+            
             if A is not []:
-              print A
+              #print A
               A_length = len(A)
+              intesecList = []
+              twoPointsList = []
               for x in range(0,A_length):
                 intesec = intersect(A[x],B[x])
+                #calculate distance between center and intersection
+                
+                for i in circles[0,:]:
+                  center = []
+                  center.append(i[0])
+                  center.append(i[1])
+                  dist = distance(center,intesec)
+                  
+
+                  if dist < 0.8*i[2]:
+                    twoPointsList.append([center,intesec])
+                    intesecList.append(intesec)
+
+              #draw line between center and intersection
+              for x,y in twoPointsList:
+                cv2.line(view,(x[0],x[1]),(y[0],-y[1]),(0,0,255),2)
+
+              #print intersection from list
+              for x in intesecList:
+                cv2.circle(view,(int(x[0,0]),-int(x[1,0])),10,255,-1)
+
                 #print intesec[0,0]
-                cv2.circle(view,(int(intesec[0,0]),-int(intesec[1,0])),10,255,-1)
+                #cv2.circle(view,(int(intesec[0,0]),-int(intesec[1,0])),10,255,-1)
+                
+
+                '''
                 for rho,theta in good:
                     a = np.cos(theta)
                     b = np.sin(theta)
@@ -130,7 +169,7 @@ while(True):
                     y2 = int(y0 - 1000*(a))
                     
                     cv2.line(view,(x1,y1),(x2,y2),(0,0,255),2)
-                
+                '''
 
 
     cv2.imshow('view',view)
