@@ -4,14 +4,23 @@ from operator import itemgetter, attrgetter, methodcaller
 from numpy.linalg import inv
 import math
 
-img = cv2.imread('arena2.png')
+
+def intersect(p1,p2):
+    mat = np.matrix(((math.cos(p1[1]),-math.sin(p1[1])),(math.cos(p2[1]),-math.sin(p2[1]))))
+    mat = inv(mat)
+    dis = np.matrix((p1[0],p2[0]))
+    dis = dis.transpose()
+    result = np.dot(mat,dis)
+    return result
+
+img = cv2.imread('arena.jpg')
 img = cv2.resize(img,(800,600))
 img = cv2.medianBlur(img,5)
 gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 edges = cv2.Canny(gray,50,150,apertureSize = 3)
 cv2.imshow("edges",edges)
 #lines = cv2.HoughLines(edges,1,np.pi/180,80)
-lines = cv2.HoughLines(edges,1,np.pi/180,150,100,10)
+lines = cv2.HoughLines(edges,1,np.pi/180,100,50,10)
 good = []
 temp = []
 arr1 = []
@@ -39,26 +48,25 @@ if lines != None:
 #calculate angle
   print goodlen
 
+  intesecLength = 0
+  intesec = []
   for x in range(0,goodlen):
-    for y in range(x,goodlen):
-        if abs(good[x][1]-good[y][1])>0.7 and abs(good[x][1]-good[y][1])<0.9:
-            
-              A = good[x]
-              B = good[y]
-
-  def intersect(p1,p2):
-        mat = np.matrix(((math.cos(p1[1]),-math.sin(p1[1])),(math.cos(p2[1]),-math.sin(p2[1]))))
-        mat = inv(mat)
-        dis = np.matrix((p1[0],p2[0]))
-        dis = dis.transpose()
-        result = np.dot(mat,dis)
-        return result
-        '''
+    for y in range(x+1,goodlen):      
+      A = good[x]
+      B = good[y]
+      print intersect(A,B)
+      intesec.append(intersect(A,B))
+      intesecLength = intesecLength + 1
+ 
+  for x in range(0,intesecLength):
+    cv2.circle(img,(int(intesec[x][0,0]),-int(intesec[x][1,0])),10,255,-1)
+  
+  '''
   if A is not None:
     intesec = intersect(A,B)
     print intesec[0,0]
     cv2.circle(img,(int(intesec[0,0]),-int(intesec[1,0])),10,255,-1)
-    '''
+   '''
   print good
   for rho,theta in good:
         a = np.cos(theta)
